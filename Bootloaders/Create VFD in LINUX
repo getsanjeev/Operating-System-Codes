@@ -1,0 +1,18 @@
+To get a virtual floppy drive formatted as FAT12 you can simply do something like:
+
+
+dd if=/dev/zero of=floppy.img bs=512 count=2880
+losetup /dev/loop0 floppy.img
+mkdosfs /dev/loop0
+mount -t vfat /dev/loop0 /media/floppy
+
+Name of image is floppy.img and is created in the terminal directory.
+
+
+Unmounting it can be done using:
+
+
+umount /dev/loop0
+losetup -d /dev/loop0
+
+dd if=bootloader_1.bin bs=512 of=/dev/floppy.img

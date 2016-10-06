@@ -1,3 +1,5 @@
+/* Compile with: g++ -Wall –Werror -o shell shell.c */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,22 +9,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
  
-
-
- static int command(int input, int first, int last);
- static void cleanup(int n);
- static int run(char* cmd, int input, int first, int last);
- static char* skipwhite(char* s);
- static void split(char* cmd)
-
-
-
-
-
 /* The array below will hold the arguments: args[0] is the command. */
+
 static char* args[512];
-pid_t pid;				// ye process id type aka data type ahi 
-int command_pipe[2];	//array of size 2
+pid_t pid;
+int command_pipe[2];
  
 #define READ  0
 #define WRITE 1
@@ -42,54 +33,18 @@ int command_pipe[2];	//array of size 2
  * descriptor as its 'input'.
  */
 
-
-static int run(char* cmd, int input, int first, int last);
-static char line[1024];
-static int n = 0; /* number of calls to 'command' */
- 
-int main()
-{
-	printf("SIMPLE SHELL: Type 'exit' or send EOF to exit.\n");
-	while (1) {
-		/* Print the command prompt */
-		printf("$> ");
-		fflush(NULL);
- 
-		/* Read a command line */
-		if (!fgets(line, 1024, stdin)) 
-			return 0;
- 
-		int input = 0;
-		int first = 1;
- 
-		char* cmd = line;	//now cmd has the address of starting of array line which contains the command line input
-		char* next = strchr(cmd, '|'); /* Find first '|' */ //next now point to first instance of '|' in entered text
- 
-		while (next != NULL) {
-			/* 'next' points to '|' */
-			*next = '\0';
-			input = run(cmd, input, first, 0);
-
-			/* run takes the argument-> 1. pointer to input text, 2. 0 3. 1 4. 0   */ 
- 
-			cmd = next + 1;
-			next = strchr(cmd, '|'); /* Find next '|' */
-			first = 0;
-		}
-		input = run(cmd, input, first, 1);
-		cleanup(n);
-		n = 0;
-	}
-	return 0;
-}
-
 static int command(int input, int first, int last)
 {
 	int pipettes[2];
  
 	/* Invoke pipe */
 	pipe( pipettes );	
-	pid = fork(); 	
+	pid = fork();
+ 
+	/*
+	 SCHEME:
+	 	STDIN --> O --> O --> O --> STDOUT
+	*/
  
 	if (pid == 0) {
 		if (first == 1 && last == 0 && input == 0) {
@@ -128,10 +83,48 @@ static void cleanup(int n)
 {
 	int i;
 	for (i = 0; i < n; ++i) 
-	wait(NULL); 
+		wait(NULL); 
 }
  
-
+static int run(char* cmd, int input, int first, int last);
+static char line[1024];
+static int n = 0; /* number of calls to 'command' */
+ 
+int main()
+{
+	printf("SIMPLE SHELL: Type 'exit' or send EOF to exit.\n");
+	while (1) {
+		/* Print the command prompt */
+		printf("$> ");
+		fflush(NULL);
+ 
+		/* Read a command line */
+		if (!fgets(line, 1024, stdin)) 
+			return 0;
+ 
+		int input = 0;
+		int first = 1;
+ 
+		char* cmd = line;
+		char* next = strchr(cmd, '|'); /* Find first '|' */
+ 
+		while (next != NULL) {
+			/* 'next' points to '|' */
+			*next = '\0';
+			input = run(cmd, input, first, 0);
+ 
+			cmd = next + 1;
+			next = strchr(cmd, '|'); /* Find next '|' */
+			first = 0;
+		}
+		input = run(cmd, input, first, 1);
+		cleanup(n);
+		n = 0;
+	}
+	return 0;
+}
+ 
+static void split(char* cmd);
  
 static int run(char* cmd, int input, int first, int last)
 {
@@ -139,7 +132,7 @@ static int run(char* cmd, int input, int first, int last)
 	if (args[0] != NULL) {
 		if (strcmp(args[0], "exit") == 0) 
 			exit(0);
-		n = n+1;
+		n += 1;
 		return command(input, first, last);
 	}
 	return 0;

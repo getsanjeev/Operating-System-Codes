@@ -3,9 +3,7 @@ SYS_READ equ 3
 STDOUT equ 1
 STDIN equ 0
 
-org 0x7c00
-
-[BITS 16]
+[BITS 32]
 
 _start:
 

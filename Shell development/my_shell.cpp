@@ -10,129 +10,132 @@ vector<int> KMP_implementation(string text_string, string pattern_string);
 void get_partial_match_table(string pattern_string, int pattern_len, int pmt[]);
 vector<int> search_substring(string text_string, string pattern_string);
 string strtrim(string sentence);
+vector<int> get_white_spaces(string sentence);
+vector<string> tokenizer(string sentence);
 
 
 int main()
 {
 	cout<<"Welcome to the new SHELL"<<endl;
-	int a = 1;
-	string command;
-
-
-	while(a == 1)
+	int a = 1;			
+	vector<string> command_tokens = tokenizer("in the   arms of ocean     and tour ");	
+	cout<<"THE TOKENS ARE: "<<endl;
+	for(int x = 0;x<command_tokens.size();x++)	
 	{
-		//cout<<"Enter the command"<<endl;
-		//cin>>command;
-		//getline(cin, command);
-		if(command == "exit") 
-		{
-			a = 0;
-		}
-		string j = strtrim("    i am hello world   ");
-		cout<<j;
-		//command = strtrim(command,2);
-		
-		vector<string> command_tokens = tokenize_sentence(command);		
-		for(int x = 0;x<command_tokens.size();x++)	
-	{
-		cout<<command_tokens.at(x)<<" ";
+		cout<<command_tokens.at(x)<<endl;
 	}
-	}
+	
 
 }
 
-vector<string> tokenize_sentence(string sentence)
+
+vector<string> tokenizer(string sentence)
 {
-	int init_size_vector = 20;
-	vector<string> token_vector(init_size_vector);			
-	int size_sentence = sentence.size();	
-	char tab2[size_sentence+1];	
-	tab2[size_sentence+1] = '\0';
-	strcpy(tab2, sentence.c_str());	
-	int index = 0;	
-	int pre_index = 0;
-	int post_index = 0;	
-	vector<int> index_vector = KMP_implementation(sentence, " ");	
-	index_vector.push_back(size_sentence-1);		
+	int p;
+	sentence = strtrim(sentence);	
+	vector<string> tokens (10);		
+	vector<int> index_vector = get_white_spaces(sentence);	
+	int pre,post,length,i;
+	i= 0;
+	length = 0;
 	string temp;
-	string tokens[(index_vector.size())/2];	
-	int p = 0;
-	int m = 0;
-	while(m<= index_vector.size()-2)
+	while(i < index_vector.size())
 	{
-		int temp_size = index_vector[m+1] - index_vector[m] + 1;			
-		char arr[temp_size];
-		int start = p;
-		for(int k = 0;k<temp_size;k++)
-		{									
-			arr[k] = tab2[start];			
-			start++;
-		}		
-		temp = arr;				
-		m = m+2;	
-		p = index_vector[m];		
-		token_vector.at(index) = temp;
-		index++;	
-		if(index == init_size_vector) 
+		if((i ==0)||(index_vector.at(i) !=0))
 		{
-			token_vector.resize(2*init_size_vector);
-			init_size_vector = 2*init_size_vector;
+			temp.clear();
+			pre = index_vector.at(i);
+			post = index_vector.at(i+1);			
+			for(int j = pre;j<=post;j++)
+			{
+				temp = temp + sentence[j];
+			}			
+			tokens.at(length) = temp;
+			length++;		
 		}
+
+		i = i+2;
 	}	
-	return token_vector;
+	return tokens;
 }
-
-
 vector<int> get_white_spaces(string sentence)
-{
-	/*sentence = trim(sentence);
+{	
 	vector<int> space_index(20);
 	char x;
 	int i = 0;
 	int j,k;
-
+	k = 0;
+	int diff = 0;	
+	space_index.at(k) = 0;
+	k++;
 	while(i<sentence.size())
-	{
-		x = sentence[i];
-		if(x != ' ')
+	{		
+		if(sentence[i] == ' ')
 		{
-			space_index.add(i);
-
-		}		
+			space_index.at(k) = i-1;
+			k++;
+			j = i;
+			while(j<sentence.size()-1)
+			{				
+				if((sentence[j]==' ')&&(sentence[j+1]!=' ')) 
+				{			
+					space_index.at(k) = j+1;
+					k++;
+					break;
+				}
+				else j++;
+			}						
+			diff = j-i;
+			i = j+1;			
+		}	
+		else i++;			
+		 
 	}
-*/
-
-
-
+	space_index.at(k) = sentence.size()-1;	
+	return space_index;
 }
 
 string strtrim(string sentence)
 {	
 	int i = 0;
-	int j = sentence.size();
-	char x;
-	
-	cout<<"netref"<<endl;
+	sentence = sentence.c_str();
+	int j = sentence.size()-1;	
+	char x;		
 	while(i < j)
 	{
-		if((sentence[i] == ' ') && (sentence[i+1] != ' ')) break;
-		i++;
-	}
+		if(sentence[0] != ' ') 
+		{
+				i = 0;
+				break;
+		}
+		else if((sentence[i] == ' ') && (sentence[i+1] != ' ')) 
+		{
+				i = i+1;
+				break;
+		}
+		else
+		{
+			i++;			
+		}
+	}	
 	while(j>0)
 	{
-		if((sentence[j] == ' ') && (sentence[j-1]!=' ')) break;
-		j--;
+		if(sentence[sentence.size()-1] != ' ') break;		
+		else if((sentence[j] == ' ') && (sentence[j-1]!=' ')) 
+		{	
+			j = j-1;
+			break;
+		}
+		else j--;
 	}
-	cout<<i<<"value of i"<<endl;
-	cout<<j<<"value of j"<<endl;
 	string trm_str;
-	trm_str.clear();
-	for(int k = i+1; k<j-1; k++)
+	trm_str.clear();	
+
+	for(int k = i; k<=j; k++)
 	{
 		x = sentence[k];
-		trm_str = trm_str + x;
-		k++;
-	}
+		trm_str = trm_str + x;		
+	}	
 	return trm_str;
 
 }
@@ -209,6 +212,7 @@ void get_partial_match_table(string pattern_string, int pattern_len, int pmt[])
 				pmt[i] = 0;
 				i++;
 			}
+		
 		}
 	}
 }

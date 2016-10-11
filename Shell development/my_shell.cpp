@@ -9,6 +9,7 @@ vector<string> tokenize_sentence(string sentence);
 vector<int> KMP_implementation(string text_string, string pattern_string);
 void get_partial_match_table(string pattern_string, int pattern_len, int pmt[]);
 vector<int> search_substring(string text_string, string pattern_string);
+string strtrim(string sentence);
 
 
 int main()
@@ -20,13 +21,15 @@ int main()
 
 	while(a == 1)
 	{
-		cout<<"Enter the command"<<endl;
-		cin>>command;
-		getline(cin, command);
+		//cout<<"Enter the command"<<endl;
+		//cin>>command;
+		//getline(cin, command);
 		if(command == "exit") 
 		{
 			a = 0;
 		}
+		string j = strtrim("    i am hello world   ");
+		cout<<j;
 		//command = strtrim(command,2);
 		
 		vector<string> command_tokens = tokenize_sentence(command);		
@@ -78,6 +81,62 @@ vector<string> tokenize_sentence(string sentence)
 	}	
 	return token_vector;
 }
+
+
+vector<int> get_white_spaces(string sentence)
+{
+	/*sentence = trim(sentence);
+	vector<int> space_index(20);
+	char x;
+	int i = 0;
+	int j,k;
+
+	while(i<sentence.size())
+	{
+		x = sentence[i];
+		if(x != ' ')
+		{
+			space_index.add(i);
+
+		}		
+	}
+*/
+
+
+
+}
+
+string strtrim(string sentence)
+{	
+	int i = 0;
+	int j = sentence.size();
+	char x;
+	
+	cout<<"netref"<<endl;
+	while(i < j)
+	{
+		if((sentence[i] == ' ') && (sentence[i+1] != ' ')) break;
+		i++;
+	}
+	while(j>0)
+	{
+		if((sentence[j] == ' ') && (sentence[j-1]!=' ')) break;
+		j--;
+	}
+	cout<<i<<"value of i"<<endl;
+	cout<<j<<"value of j"<<endl;
+	string trm_str;
+	trm_str.clear();
+	for(int k = i+1; k<j-1; k++)
+	{
+		x = sentence[k];
+		trm_str = trm_str + x;
+		k++;
+	}
+	return trm_str;
+
+}
+
 
 vector<int> KMP_implementation(string text_string, string pattern_string)   //This is implementation of KMP algorithm
 {	vector<int> v;

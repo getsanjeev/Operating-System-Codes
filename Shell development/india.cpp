@@ -18,7 +18,7 @@ int main()
 {
 	cout<<"Welcome to the new SHELL"<<endl;
 	int a = 1;			
-	vector<string> command_tokens = tokenizer("     jehj jhjb     jhjshdjeh  jhjh  jhdjopppesrj   ");	
+	vector<string> command_tokens = tokenizer("     in the   arms of ocean     and tour ");	
 	cout<<"THE TOKENS ARE: "<<endl;
 	for(int x = 0;x<command_tokens.size();x++)	
 	{
@@ -28,25 +28,6 @@ int main()
 
 }
 
-void grep_implement(string file_path, string text)
-{
-	string data = getdata_string(file_path);
-	vector<int> KMP_implementation(data, text);
-}
-
-void change_directory(string directory)
-{
-    int status = chdir(directory.c_str());
-    if(status != 0) cout<<"ERROR: no directory found";
-    else    
-}
-
-void get_current_directory_info()
-{
-	char *cmd = NULL;
-    cmd = get_current_dir_name ();
-    cout<<"Directory changed to: "<<cmd<<endl;
-}
 
 vector<string> tokenizer(string sentence)
 {
@@ -157,21 +138,6 @@ string strtrim(string sentence)
 	}	
 	return trm_str;
 
-}
-
-string getdata_string(string file_name)
-{
-	ifstream file(file_name.c_str());
-    string word;
-    char x ;
-    word.clear();
-    int count  = 0;
-    while ((x = file.get())!= EOF)
-    {
-        word = word + x;
-    }
-    file.close();
-    return word;   
 }
 
 

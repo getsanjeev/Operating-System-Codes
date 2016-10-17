@@ -42,13 +42,6 @@ int main()
 
 }
 
-void change_directory(string directory)
-{
-    int a = chdir(directory.c_str());
-    cout<<a;     
-}
-
-
 void get_data_string(string file_name)
 {
     cout<<"in function"<<endl;

@@ -2,50 +2,63 @@
 #include<string.h>
 #include<fstream>
 #include<vector>
+#include<unistd.h>
 
 using namespace std;
 
-vector<string> tokenize_sentence(string sentence);
-vector<int> KMP_implementation(string text_string, string pattern_string);
-void get_partial_match_table(string pattern_string, int pattern_len, int pmt[]);
-vector<int> search_substring(string text_string, string pattern_string);
+void change_directory(string directory);
+void get_current_directory_info();
 string strtrim(string sentence);
 vector<int> get_white_spaces(string sentence);
 vector<string> tokenizer(string sentence);
+void get_current_directory_info();
 
 
+
+// cd directory path: change directory
+// currentdir: gives the current directory path
 int main()
-{
+{	
+	string command;
 	cout<<"Welcome to the new SHELL"<<endl;
 	int a = 1;			
-	vector<string> command_tokens = tokenizer("     jehj jhjb     jhjshdjeh  jhjh  jhdjopppesrj   ");	
-	cout<<"THE TOKENS ARE: "<<endl;
-	for(int x = 0;x<command_tokens.size();x++)	
+	cout<<"Sanjeev@hpProBook~$";
+	getline(cin, command);
+	vector<string> tokens = tokenizer(command);
+	string my_commands [2] = {"cd", "currentdir"};
+	int number;
+	for(int i = 0;i<2;i++)
 	{
-		cout<<command_tokens.at(x)<<endl;
+		if(tokens[0] == my_commands[i])
+		{			
+			number = i;
+			break;
+		}
 	}
-	
-
+	switch(number)
+	{
+		case 0: change_directory(tokens[1]);
+				break;
+		case 1: get_current_directory_info();
+				break;
+		case 2: //	
+		break;			
+	}
 }
 
-void grep_implement(string file_path, string text)
-{
-	string data = getdata_string(file_path);
-	vector<int> KMP_implementation(data, text);
-}
+
 
 void change_directory(string directory)
 {
     int status = chdir(directory.c_str());
-    if(status != 0) cout<<"ERROR: no directory found";
-    else    
+    if(status != 0) cout<<"ERROR: no directory found";    
 }
 
 void get_current_directory_info()
-{
+{	
 	char *cmd = NULL;
     cmd = get_current_dir_name ();
-    cout<<"Directory changed to: "<<cmd<<endl;
+    cout<<"Directory changed to: "<<cmd<<endl;    
 }
 
 vector<string> tokenizer(string sentence)
@@ -159,94 +172,3 @@ string strtrim(string sentence)
 
 }
 
-string getdata_string(string file_name)
-{
-	ifstream file(file_name.c_str());
-    string word;
-    char x ;
-    word.clear();
-    int count  = 0;
-    while ((x = file.get())!= EOF)
-    {
-        word = word + x;
-    }
-    file.close();
-    return word;   
-}
-
-
-vector<int> KMP_implementation(string text_string, string pattern_string)   //This is implementation of KMP algorithm
-{	vector<int> v;
-	v = search_substring(text_string, pattern_string);
-	return v;
-}
-
-vector<int> search_substring(string text_string, string pattern_string)
-{
-	vector<int> index_vector;
-	index_vector.push_back(0);
-	int pattern_len, text_len, j, i,count;
-	count  = 0;
-	pattern_len = pattern_string.length();
-	text_len = text_string.length();
-	int pmt[pattern_len];
-	j = 0;
-	get_partial_match_table(pattern_string, pattern_len, pmt);
-	i = 0;
-	while (i < text_len)
-	{
-		if (pattern_string[j] == text_string[i])
-		{
-			j = j+1;
-			i = i+1;
-		}
-		if (pattern_len == j)
-		{			
-			index_vector.push_back(i-j-1);
-			index_vector.push_back(i-j+1);
-			count = count +1;
-			j = pmt[j-1];
-		}
-		else if ((i < text_len)&&(pattern_string[j] != text_string[i]))
-		{
-			if ( 0 != j)
-			{
-				j = pmt[j-1];
-			}
-			else
-			{
-				i = i + 1;
-			}
-		}
-	}
-	return index_vector;   //returns no of times a pattern is contained in it.
-}
-
-void get_partial_match_table(string pattern_string, int pattern_len, int pmt[])
-{
-	int j = 0;
-	int i = 1;
-	pmt[0] = 0;
-	while (i < pattern_len)
-	{
-		if (pattern_string[i] == pattern_string[j])
-		{
-			pmt[i] = j+1;
-			j++;
-			i++;
-		}
-		else
-		{
-			if (0 != j)
-			{
-				j = pmt[j - 1];
-			}
-			else
-			{
-				pmt[i] = 0;
-				i++;
-			}
-		
-		}
-	}
-}
